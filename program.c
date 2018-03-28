@@ -91,10 +91,49 @@ void createProcess(int n, struct process proc[]) {
 	}
 }
 
+
+void assignProcessInQueue(int n, struct process proc[]) {
+	int i ;
+	for(i=0; i<n; i++) {
+		if((proc[i].priority)>=0 && (proc[i].priority)<100) {
+			queue1Push(proc[i]) ;
+		} else if ((proc[i].priority)>=100 && (proc[i].priority)<200) {
+			queue2Push(proc[i]) ;
+		} else if ((proc[i].priority)>=200 && (proc[i].priority)<300) {
+			queue3Push(proc[i]) ;
+		} 
+	}	
+}
+
+
+void printQueueFront() {
+//	printf("Queue 1 1st -> P%d\n",queue1Front().processId) ;
+//	printf("Queue 2 1st -> P%d\n",queue2Front().processId) ;
+//	printf("Queue 3 1st -> P%d\n",queue3Front().processId) ;
+	int i ;
+	printf("Process in Queue 1 - ") ;
+	for(i=0;i<=rear1;i++) {
+		printf("P%d  ",queue1[i].processId) ;
+	}
+	printf("\nProcess in Queue 2 - ") ;
+	for(i=0;i<=rear2;i++) {
+		printf("P%d  ",queue2[i].processId) ;
+	}
+	printf("\nProcess in Queue 3 - ") ;
+	for(i=0;i<=rear3;i++) {
+		printf("P%d  ",queue3[i].processId) ;
+	}
+	printf("\n") ;
+}
+
+
+
 int main() {
 	int n ;
 	printf("How many process - ") ;
 	scanf("%d",&n) ;
 	struct process proc[n] ;
 	createProcess(n, proc) ;
+	assignProcessInQueue(n, proc) ;
+	printQueueFront() ;
 }
