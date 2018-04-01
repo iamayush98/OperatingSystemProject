@@ -126,6 +126,66 @@ void printQueueFront() {
 	printf("\n") ;
 }
 
+void roundRobin(int n, struct process proc[]) {
+	int i,j,time,remain=n,flag=0,timeQuantum = 4,waitTime=0,turnAroundTime=0 ;
+	
+	printf("\n\nProcess\t\tWaiting Time    Turnaround Time\n\n"); 
+  	for(time=0,i=0;remain!=0;) {  	 
+	    if((proc[i].responseTime<=timeQuantum) && (proc[i].responseTime)>0) { 
+			time+=(proc[i].responseTime); 
+	      	(proc[i].responseTime)=0; 
+	      	flag=1; 
+	    } else if((proc[i].responseTime)>0) { 
+			(proc[i].responseTime)-=timeQuantum; 
+			time+=timeQuantum; 
+	    } if((proc[i].responseTime)==0 && flag==1) { 
+		    remain--; 
+			printf("Process[%d]\t\t%d\t\t%d\n",proc[i].processId,time-((proc[i].arrivalTime)-(proc[i].burstTime)),time-(proc[i].arrivalTime)); 
+		    waitTime+=time-(proc[i].arrivalTime)-(proc[i].burstTime); 
+			turnAroundTime+=time-(proc[i].arrivalTime); 
+		    flag=0; 
+	    } if(i==n-1) 
+	    	i=0; 
+	    else if((proc[i+1].arrivalTime)<=time) 
+	    	i++; 
+	    else 
+	    	i=0; 
+	} 
+	//printf("\nAverage Waiting Time= %f\n",waitTime*1.0/n); 
+	//printf("Avg Turnaround Time = %f",turnAroundTime*1.0/n); 
+}
+
+
+void fcfs(int n, struct process proc[]) {
+	float abTime[500],wTime[500],tat_time[500];
+	int i = 0 ;
+    float aw_time = 0, atat_time = 0;
+    wTime[0] = 0;
+    tat_time[0] = queue3[front3].burstTime;
+    abTime[0] = queue3[front3].burstTime+queue3[front3].arrivalTime;
+    for( i = 1 ; i < n ; i++){
+        abTime[i] = abTime[i-1] + proc[i].burstTime;
+        tat_time[i] = abTime[i] - proc[i].arrivalTime;
+        wTime[i] = tat_time[i] - proc[i].burstTime;
+    }
+    for(i = 0 ; i < n ; i++){
+        aw_time = aw_time + wTime[i];
+        atat_time = atat_time + tat_time[i];
+    }
+    printf("\n\t\tWaiting Time    Turnaround Time\n");
+    for(i = 0 ; i < n ; i++){
+        printf("\nProcess[%d]\t\t%0.2f\t\t%0.2f\n",proc[i].processId,wTime[i],tat_time[i]);
+    }
+    //printf("\nAverage waiting time : %0.2f",aw_time/n);
+    //printf("\nAverage turn around time : %0.2f",atat_time/n);       
+}
+
+void queueScheduling1() {
+	roundRobin(rear1+1, queue1) ;
+}
+void queueScheduling2() {
+	priorityScheduling(rear2+1, queue2) ;
+}
 
 
 int main() {
@@ -136,4 +196,6 @@ int main() {
 	createProcess(n, proc) ;
 	assignProcessInQueue(n, proc) ;
 	printQueueFront() ;
+	queueScheduling1() ;
+	queueScheduling2() ;
 }
