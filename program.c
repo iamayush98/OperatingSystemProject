@@ -19,6 +19,7 @@ int front2 = -1 ;
 int rear3 = -1 ;
 int front3 = -1 ;
 
+
 void queue1Push(struct process proc) {
 	if(front1 == -1) {
 		front1 = 0 ;
@@ -126,6 +127,7 @@ void printQueueFront() {
 	printf("\n") ;
 }
 
+
 void roundRobin(int n, struct process proc[]) {
 	int i,j,time,remain=n,flag=0,timeQuantum = 4,waitTime=0,turnAroundTime=0 ;
 	
@@ -180,13 +182,59 @@ void fcfs(int n, struct process proc[]) {
     //printf("\nAverage turn around time : %0.2f",atat_time/n);       
 }
 
+
+void priorityScheduling(int n, struct process proc[]) {
+	int time = 0,largest ;
+	struct process temp;
+int i,j,sum_bt;
+for(i=0;i<n-1;i++)
+for(j=i+1;j<n;j++)
+{
+if(proc[i].arrivalTime>proc[j].arrivalTime)
+{
+temp=proc[i];
+proc[i]=proc[j];
+proc[j]=temp;
+}
+}
+for(i=0;i<n;i++)
+ {
+ 	proc[i].processed=0;
+ sum_bt+=proc[i].burstTime;
+ }
+ proc[rear2+1].priority=-9999;
+printf("\nProcess\t\tPriority\t\tWaiting Time\t\tTurnaround Time ");
+  for(time=queue2[front2].arrivalTime;time<sum_bt;)
+  {
+    largest=rear2+1;
+    for(i=0;i<n;i++)
+    {
+      if(proc[i].arrivalTime<=time && proc[i].processed!=1 && proc[i].priority>proc[largest].priority)
+        largest=i;
+    }
+      time+=proc[largest].burstTime;
+      int ct[100],wt[100],tt[100] ;
+  ct[largest]=time;
+          wt[largest]=ct[largest]-proc[largest].arrivalTime-proc[largest].burstTime;
+    tt[largest]=ct[largest]-proc[largest].arrivalTime;
+    proc[largest].processed=1;
+    //avgwt+=p[largest].wt;4
+printf("\nProcess[%d]\t\t%d\t\t\t%d\t\t\t%d\t",proc[largest].processId,proc[largest].priority,wt[largest],tt[largest]);
+}
+//printf("\nAverage waiting time:%f\n",avgwt/n);
+printf("\n") ;
+}
+
+
 void queueScheduling1() {
 	roundRobin(rear1+1, queue1) ;
 }
 void queueScheduling2() {
 	priorityScheduling(rear2+1, queue2) ;
 }
-
+void queueScheduling3() {
+	fcfs(rear3+1, queue3) ;
+}
 
 int main() {
 	int n ;
@@ -198,4 +246,22 @@ int main() {
 	printQueueFront() ;
 	queueScheduling1() ;
 	queueScheduling2() ;
+	queueScheduling3() ;
+//	int i ;
+//	for(i = 0; i<n;i++) {
+//		
+//		printf("%d %d %d %d\n",proc[i].processId,proc[i].arrivalTime,proc[i].burstTime,proc[i].priority) ;
+//	}
 }
+
+
+
+
+// main_scheduling() {
+//    RoundRobin - 10sec
+//          q1 / q2 / q3
+// }
+
+// queue1() - round robin 4 secs
+// queue2() - priority scheduling
+// queue3() - FCFS
